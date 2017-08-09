@@ -13,7 +13,16 @@ client.on('ready', () => {
 });
 
 client.on('guildMemberAdd', member => {
-    member.guild.channels.find('id', config['main_channel']).send("Welcome ${member}, Please check the " + member.guild.channels.find('id', config['welcome_channel']).mention + " channel for ");
+    try {
+
+            member.guild.channels.find('id', config['main_channel']).send("Welcome ${member}, Please check the " + member.guild.channels.find('id', config['welcome_channel']).mention + " channel for ");
+
+
+    }
+    catch(e){
+        console.log(e);
+    }
+
 });
 
 client.on('message', message => {
@@ -29,7 +38,7 @@ client.on('message', message => {
         }else{
 
                 message.reply('This feature does not exist yet. Please stand by.');
-
+                console.log("Add Command: " + "This feature does not exist yet. Please stand by.");
         }
     }else if (message.toString().startsWith("!" + "announce")){
         if(userRole.indexOf(staffRoles) > -1){
@@ -39,7 +48,7 @@ client.on('message', message => {
             var announcement = message.content.replace("!announce ", "");
 
             message.guild.channels.find('id', config['announce_channel']).send(announcement);
-
+            console.log("Announcement: " + announcement);
 
             message.delete(1);
         }
