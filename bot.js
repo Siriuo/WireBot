@@ -14,10 +14,8 @@ client.on('ready', () => {
 
 client.on('guildMemberAdd', member => {
     try {
-
-            member.guild.channels.find('id', config['main_channel']).send("Welcome ${member}, Please check the " + member.guild.channels.find('id', config['welcome_channel']).mention + " channel for ");
-
-
+            var welcomeChannel = member.guild.channels.find('id', config['welcome_channel']);
+            member.guild.channels.find('id', config['main_channel']).send("Welcome ${member}, Please check the " + welcomeChannel.mention() + " channel for ");
     }
     catch(e){
         console.log(e);
