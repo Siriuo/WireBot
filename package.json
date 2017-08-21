@@ -5,7 +5,7 @@
   "main": "bot.js",
   "dependencies": {
     "discord.js": "^11.1.0",
-    "eris": "^0.7.0",
+    "eris": "^0.7.1",
     "node-opus": "^0.2.6",
     "run-queue": "^1.0.3",
     "youtube-audio-stream": "^0.0.48"

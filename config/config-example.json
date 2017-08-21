@@ -5,6 +5,7 @@
         "ROLEID"
     ],
     "announce_channel": "Channel ID Here",
-    "main_channel": "Channel ID Here"
+    "main_channel": "Channel ID Here",
+    "welcome_channel": "Channel ID Here"
 
 }
