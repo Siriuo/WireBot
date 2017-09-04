@@ -22,7 +22,7 @@ client.on('ready', () => {
 client.on('guildMemberAdd', member => {
     try {
         var welcomeChannel = member.guild.channels.find('id', config['welcome_channel']);
-        var welcomeMessage = "Welcome " + message.author.toString() + ", Please check the " + welcomeChannel.toString() + " channel to get started.";
+        var welcomeMessage = "Welcome " + member.toString() + ", Please check the " + welcomeChannel.toString() + " channel to get started.";
         member.guild.channels.find('id', config['main_channel']).send(welcomeMessage);
         var $log = "Welcome: " + welcomeMessage;
         console.log($log);
