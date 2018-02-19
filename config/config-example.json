@@ -1,11 +1,14 @@
 {
-    "token": "TOKENID",
-    "staff_roles":[
-        "ROLEID",
-        "ROLEID"
+    "token": "DISCORD_TOKEN",
+    "staff_roles": [
+        "STAFF_ROLE_ID"
     ],
-    "announce_channel": "Channel ID Here",
-    "main_channel": "Channel ID Here",
-    "welcome_channel": "Channel ID Here"
+    "rcon_server": "localhost",
+    "rcon_port": "25575",
+    "rcon_password": "RCON_PASSWORD",
 
+    "announce_channel": "ANNOUNCEMENT_CHANNEL_ID",
+    "main_channel": "MAIN_CHANNEL_ID",
+    "welcome_channel": "WELCOME_CHANNEL_ID",
+    "whitelist_channel": "WHITELIST_CHANNEL_ID"
 }
