@@ -4,13 +4,12 @@
   "description": "Wirenut Official Discord Bot",
   "main": "bot.js",
   "dependencies": {
-    "bufferutil": "^3.0.3",
-    "discord.js": "^11.3.0",
-    "erlpack": "github:discordapp/erlpack",
+    "discord.js": "^11.3.2",
+    "eris": "^0.7.1",
+    "mysql": "^2.15.0",
     "node-opus": "^0.2.6",
-    "opusscript": "0.0.6",
+    "request": "^2.87.0",
     "run-queue": "^1.0.3",
-    "simple-rcon": "^0.3.1",
     "youtube-audio-stream": "^0.0.48"
   },
   "devDependencies": {},
