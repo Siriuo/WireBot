@@ -10,8 +10,7 @@
 	"whitelist_channel": "Channel ID Here",
 	"db": {
 		"host": "",
-		"port": "3389",
-		"username": "",
+		"user": "",
 		"password": "",
 		"database": ""
 	}
