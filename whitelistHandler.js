@@ -9,72 +9,117 @@ const request = require('request');
 
 class whitelistHandler
 {
-		
+
 		constructor()
 		{
-
 		}
 
-		addWhitelist(discord_uuid, discord_username, mc_username)
+		addWhitelist(message, discord_uuid, discord_username, mc_username)
 		{
 			try {
-				
-				var sql = "SELECT * FROM users WHERE discord_uuid = '" + discord_uuid + "'";
-				
-				db.connect(function(error) {
-					if (error) throw error;
-					db.query(sql, function (error, result, fields) {
+				let sql = "";
+
+				db.connect(function(error){
+					if (error) {
+						log.error(error.stack);
+						return;
+					}
+				});
+
+				sql = "SELECT * FROM users WHERE discord_uuid = '" + discord_uuid + "'";
+
+				db.query(sql, function(error, result, fields) {
 						if (error) {
-							//db.end();
-							log.error(error);
+							db.end();
+							log.error(error.stack);
 							return;
 						}
-						if (result.length == 0){
-							log.info("User Does Not Exist! Creating User!");
-							
-							request('https://api.mojang.com/users/profiles/minecraft/' + mc_username, function(error, response, body){
-								if (error) throw error;
-								var mc_api = JSON.parse(body);
 
-								var sql = "INSERT INTO users SET mc_username = '" + mc_username + "', mc_uuid = '" + mc_api.id + "', discord_uuid = '" + discord_uuid + "', discord_username = '" + discord_username + "'";
-								db.query(sql, function(error, result){
-									if (error) {
-										//db.end();
-										log.error(error);
-										return;
-									}
-									
-									log.info("New User Created");
-								});
-							});
-			
-						}else{
-							log.info("User Exists! Checking if whitelisted!");
-							var sql = "UPDATE users SET whitelisted = '1' WHERE discord_uuid = '" + discord_uuid + "'";
-							
-							db.query(sql, function(error, result){
+						if(result.length == 0){
+
+							log.info("User Does Not Exist! Creating User!");
+
+							request('https://api.mojang.com/users/profiles/minecraft/' + mc_username, function(error, response, body) {
 								if (error) {
-									//db.end();
-									log.error(error);
+									db.end();
+									log.error(error.stack);
 									return;
 								}
-								
-								log.info("Whitelist Updated!");
+
+								let mc_api = JSON.parse(body);
+
+								sql = "INSERT INTO users SET mc_username = '" + mc_username + "', mc_uuid = '" + mc_api.id + "', discord_uuid = '" + discord_uuid + "', discord_username = '" + discord_username + "', whitelisted = '1'";
 							});
-							
+
+							db.query(sql, function(error, result){
+								if (error) {
+									db.end();
+									log.error(error.stack);
+									return;
+								}
+
+								log.info("New User Created");
+								return;
+							});
 						}
-					});
 				});
-				
-				//db.end();	
-				
+
+
+				log.info("User Exists! Checking if whitelisted!");
+				sql = "SELECT * FROM users WHERE discord_uuid = '" + discord_uuid + "'";
+				db.query(sql, function(error, result) {
+					if (error) {
+						db.end();
+						log.error(error.stack);
+						return;
+					}
+
+					if(result[0].whitelisted === 1) {
+						log.info(discord_username + " is Already Whitelisted");
+						message.reply("You are already Whitelisted!");
+					}else{
+						log.info("Updating Whitelist!");
+						sql = "UPDATE users SET whitelisted = '1' WHERE discord_uuid = '" + discord_uuid + "'";
+						db.query(sql, function(error, result) {
+							if(error) {
+								db.end();
+								log.error(error.stack);
+								return;
+							}
+							log.info("Whitelist for " + discord_username + " Updated!");
+							message.reply("You have been whitelisted! Please allow 5 - 10 minutes for the whitelist to complete.");
+						});
+					}
+				});
+
+
+
+
+
+						// }else{
+						// 	log.info("User Exists! Checking if whitelisted!");
+						// 	var sql = "UPDATE users SET whitelisted = '1' WHERE discord_uuid = '" + discord_uuid + "'";
+						//
+						// 	db.query(sql, function(error, result){
+						// 		if (error) {
+						// 			//db.end();
+						// 			log.error(error);
+						// 			return;
+						// 		}
+						//
+						// 		log.info("Whitelist Updated!");
+						// 	});
+						//
+						// }
+
+
 			}catch(e){
 				log.error(e);
 				db.end();
 			}
 		}
 
-		updateWhitelist(discord_uuid, discord_username, old_mc_username, new_mc_username)
+		updateWhitelist(message, discord_uuid, discord_username, old_mc_username, new_mc_username)
 		{
 			try {
 
@@ -89,8 +134,8 @@ class whitelistHandler
 							log.info("User Does Not Exist!");
 						}else{
 							log.info("User Exists! Checking if whitelisted!");
-							
-							
+
+
 							request('https://api.mojang.com/users/profiles/minecraft/' + mc_username, function(error, response, body){
 								if (error) throw error;
 								var mc_api = JSON.parse(body);
@@ -104,7 +149,7 @@ class whitelistHandler
 						}
 					});
 				});
-					
+
 				db.end();
 			}catch(e){
 				log.error(e);
@@ -115,7 +160,7 @@ class whitelistHandler
 		removeWhitelist(discord_uuid)
 		{
 			try {
-				
+
 				db.connect(function(error) {
 					if (error) throw error;
 					var sql = "SELECT * FROM users WHERE discord_uuid = '" + discord_uuid + "'";
@@ -133,7 +178,7 @@ class whitelistHandler
 						}
 					});
 				});
-				
+
 				db.end();
 			}catch(e){
 				log.error(e);
@@ -141,7 +186,7 @@ class whitelistHandler
 			}
 		}
 
-		
+
 }
-		
+
 module.exports = whitelistHandler;

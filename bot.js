@@ -49,29 +49,26 @@ client.on('guldMemberRemove', member => {
 
 client.on('message', message => {
 	try {
+        
 		var userRoles = message.member.roles;
-		
+
 		let roles = [];
-		
+
 		userRoles.forEach(function(role){
 			roles.push(role.name);
 		});
-		
+
 		if (message.author.bot) return;
-		
+
 		if(!message.content.startsWith("!")) return;
-		
+
 		const args = message.content.split(/ +/g);
-		
+
 		const command = args.shift().toLowerCase().substring(1);
 
-		
-		log.info(command);
-		log.info(args);
-		
 		if(!fs.existsSync('./commands/' + command.toString() + '.js')) return;
-	
-	
+
+
 		let toRun = require('./commands/' + command.toString() + '.js');
 		toRun.run(client, message, args, roles);
 	} catch (e) {
