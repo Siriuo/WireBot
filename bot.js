@@ -49,7 +49,7 @@ client.on('guldMemberRemove', member => {
 
 client.on('message', message => {
 	try {
-        log.info(message.channel.name);
+
 		var userRoles = message.member.roles;
 
 		let roles = [];
