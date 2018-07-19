@@ -35,7 +35,7 @@ class whitelistHandler
 							return;
 						}
 
-						if(result.length == 0){
+						if(result.length == 0 || result == undefined){
 
 							log.info("User Does Not Exist! Creating User!");
 
@@ -49,68 +49,53 @@ class whitelistHandler
 								let mc_api = JSON.parse(body);
 
 								sql = "INSERT INTO users SET mc_username = '" + mc_username + "', mc_uuid = '" + mc_api.id + "', discord_uuid = '" + discord_uuid + "', discord_username = '" + discord_username + "', whitelisted = '1'";
+
+								db.query(sql, function(error, result){
+									if (error) {
+										db.end();
+										log.error(error.stack);
+										return;
+									}
+
+									log.info("New User Created");
+									return;
+								});
+
+
 							});
 
-							db.query(sql, function(error, result){
+
+						}else{
+							log.info("User Exists! Checking if whitelisted!");
+							sql = "SELECT * FROM users WHERE discord_uuid = '" + discord_uuid + "'";
+							db.query(sql, function(error, result) {
 								if (error) {
 									db.end();
 									log.error(error.stack);
 									return;
 								}
-
-								log.info("New User Created");
-								return;
+								if(result[0].whitelisted === 1) {
+									log.info(discord_username + " is Already Whitelisted");
+									message.reply("You are already Whitelisted!");
+								}else{
+									log.info("Updating Whitelist!");
+									sql = "UPDATE users SET whitelisted = '1' WHERE discord_uuid = '" + discord_uuid + "'";
+									db.query(sql, function(error, result) {
+										if(error) {
+											db.end();
+											log.error(error.stack);
+											return;
+										}
+										log.info("Whitelist for " + discord_username + " Updated!");
+										message.reply("You have been whitelisted! Please allow 5 - 10 minutes for the whitelist to complete.");
+									});
+								}
 							});
+
 						}
-				});
 
-
-				log.info("User Exists! Checking if whitelisted!");
-				sql = "SELECT * FROM users WHERE discord_uuid = '" + discord_uuid + "'";
-				db.query(sql, function(error, result) {
-					if (error) {
-						db.end();
-						log.error(error.stack);
 						return;
-					}
-
-					if(result[0].whitelisted === 1) {
-						log.info(discord_username + " is Already Whitelisted");
-						message.reply("You are already Whitelisted!");
-					}else{
-						log.info("Updating Whitelist!");
-						sql = "UPDATE users SET whitelisted = '1' WHERE discord_uuid = '" + discord_uuid + "'";
-						db.query(sql, function(error, result) {
-							if(error) {
-								db.end();
-								log.error(error.stack);
-								return;
-							}
-							log.info("Whitelist for " + discord_username + " Updated!");
-							message.reply("You have been whitelisted! Please allow 5 - 10 minutes for the whitelist to complete.");
-						});
-					}
 				});
-
-
-
-
-
-						// }else{
-						// 	log.info("User Exists! Checking if whitelisted!");
-						// 	var sql = "UPDATE users SET whitelisted = '1' WHERE discord_uuid = '" + discord_uuid + "'";
-						//
-						// 	db.query(sql, function(error, result){
-						// 		if (error) {
-						// 			//db.end();
-						// 			log.error(error);
-						// 			return;
-						// 		}
-						//
-						// 		log.info("Whitelist Updated!");
-						// 	});
-						//
-						// }
 
 
 			}catch(e){
