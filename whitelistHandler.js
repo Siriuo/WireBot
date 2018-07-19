@@ -19,12 +19,15 @@ class whitelistHandler
 			try {
 				let sql = "";
 
-				db.connect(function(error){
-					if (error) {
-						log.error(error.stack);
-						return;
-					}
-				});
+				if(db.state === 'disconnected'){
+					db.connect(function(error){
+						if (error) {
+							log.error(error.stack);
+							return;
+						}
+					});
+				}
+
 
 				sql = "SELECT * FROM users WHERE discord_uuid = '" + discord_uuid + "'";
 
@@ -97,7 +100,7 @@ class whitelistHandler
 						return;
 				});
 
-
+				db.end();
 			}catch(e){
 				log.error(e);
 				db.end();
