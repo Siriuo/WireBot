@@ -100,7 +100,6 @@ class whitelistHandler
 						return;
 				});
 
-				db.end();
 			}catch(e){
 				log.error(e);
 				db.end();
