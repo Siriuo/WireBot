@@ -61,6 +61,7 @@ class whitelistHandler
 									}
 
 									log.info("New User Created");
+									message.reply("You have been whitelisted! Please allow 5 - 10 minutes for the whitelist to complete.");
 									return;
 								});
 
