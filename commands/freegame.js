@@ -1,6 +1,3 @@
-const logHandler = require('../logHandler');
-const log = new logHandler();
-
 exports.run = (client, message, args, roles) => {
 
 	let discord_uuid = message.author.id;

@@ -10,7 +10,7 @@ exports.run = (client, message, args, roles) => {
 	if(args.length === 0) return;
 
 
-	if (roles.includes('Admin') || roles.includes('Owner/God')){
+	if (roles.includes('Admin') || roles.includes('Owner')){
 		let channel = message.guild.channels.find('name', 'announcements');
 
 		if(!channel) return;
