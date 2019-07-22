@@ -4,13 +4,8 @@
   "description": "Wirenut Official Discord Bot",
   "main": "bot.js",
   "dependencies": {
-    "discord.js": "^11.4.2",
-    "eris": "^0.7.1",
-    "mysql": "^2.16.0",
-    "node-opus": "^0.2.6",
-    "request": "^2.88.0",
-    "run-queue": "^1.0.3",
-    "youtube-audio-stream": "^0.0.48"
+    "discord.js": "^11.5.1",
+    "enmap": "^5.0.1"
   },
   "devDependencies": {},
   "scripts": {

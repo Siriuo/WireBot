@@ -1,64 +1,33 @@
-const fs = require('fs');
+const Config = require('./config.json');
+
 const Discord = require('discord.js');
-const client = new Discord.Client();
-const config = require('./config/config.json');
+const Client = new Discord.Client();
 
-const token = config['token'];
+const Enmap = require('enmap');
+const fs = require('fs');
 
-const LEAVE = require('./events/leave');
-const leave = new LEAVE();
+Client.config = Config;
 
-const LOG = require('./modules/log');
-global.log = new LOG();
 
-client.on('ready', () => {
-    global.log.info("I am Listening!");
+fs.readdir("./events", (err, files) => {
+    if(err) return console.log(err);
+    files.forEach(file => {
+        const event = require(`./events/${file}`);
+        let eventName = file.split(".")[0];
+        Client.on(eventName, event.bind(null, Client));
+    });
 });
 
-client.on('guildMemberAdd', member => {
-    try {
-        var welcomeChannel = member.guild.channels.find('name', 'main');
-        var welcomeMessage = "Welcome " + member.toString() + ", Please check the " + welcomeChannel.toString() + " channel to get started.";
-        welcomeChannel.send(welcomeMessage);
-        global.log.info(member.toString() + " has joined Wirenut!");
-    }catch(e){
-        global.log.info(e);
-    }
+Client.commands = new Enmap();
 
+fs.readdir("./commands", (err, files) => {
+    if(err) return console.log(err);
+    files.forEach(file => {
+        if(!file.endsWith(".js")) return;
+        let props = require(`./commands/${file}`);
+        let command = file.split(".")[0];
+        Client.commands.set(command, props);
+    });
 });
 
-client.on('guldMemberRemove', member => {
-	try {
-        leave.leave();
-		global.log.info(member.toString() + " has left Wirenut!");
-	}catch(e){
-		global.log.error(e);
-	}
-});
-
-
-client.on('message', message => {
-	try {
-		var userRoles = message.member.roles;
-		let roles = [];
-		userRoles.forEach(function(role){
-			roles.push(role.name);
-		});
-		if (message.author.bot) return;
-
-		if(!message.content.startsWith("!")) return;
-
-		const args = message.content.split(/ +/g);
-		const command = args.shift().toLowerCase().substring(1);
-
-		if(!fs.existsSync('./commands/' + command.toString() + '.js')) return;
-
-		let toRun = require('./commands/' + command.toString() + '.js');
-		toRun.run(client, message, args, roles);
-	} catch (e) {
-		global.log.error(e);
-	}
-
-});
-
-client.login(token);
+Client.login(Config.token);
